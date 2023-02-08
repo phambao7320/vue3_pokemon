@@ -1,26 +1,41 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <home-screen-vue v-if="statusScreen === 'default'" @onStart="onHandleBeforeStart($event)"/>
+  <game-screen-vue v-if="statusScreen === 'playGame'" 
+    :matrixRandom="settings.matrixRandom"
+    :sizeOfScreen="settings.sizeOfWidth"  
+  />
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import HomeScreenVue from './components/HomeScreen.vue';
+import GameScreenVue from './components/GameScreen.vue';
+import { createRandomArrays, getNumberSize } from '@/utils/index'
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    HomeScreenVue,
+    GameScreenVue,
+  },
+  data() {
+    return {
+      statusScreen: "default",
+      settings: {
+        numberOfBlock: 0,
+        sizeOfWidth: 0,
+        matrixRandom: [],
+      },
+    }
+  },
+  methods : {
+    onHandleBeforeStart(configs) {
+      this.settings.numberOfBlock = configs.numberOfBlock;
+      this.settings.sizeOfWidth = getNumberSize(configs.numberOfBlock);
+      this.settings.matrixRandom = createRandomArrays(this.settings.numberOfBlock);
+      this.statusScreen = "playGame";
+    },
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
 </style>
